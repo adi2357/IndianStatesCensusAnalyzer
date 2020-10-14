@@ -34,8 +34,13 @@ public class StateCensusAnalyzer {
 				throw new StateCensusAnalyzerException("Invalid delimiter",
 						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
 			}
-
-			return noOfEnteries;
+			boolean isEqualsHeader= columnsForGivenDelimeter[0].equals("State") && columnsForGivenDelimeter[1].equals("Population")
+					&& columnsForGivenDelimeter[2].equals("Area In Square Km") && columnsForGivenDelimeter[3].equals("Density Per Square Km");
+			if(!isEqualsHeader) {
+				throw new StateCensusAnalyzerException("Invalid CSV header",
+						StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
+			}
+				return noOfEnteries;
 		} catch (IOException e1) {
 			throw new StateCensusAnalyzerException("Invalid path entered",
 					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
