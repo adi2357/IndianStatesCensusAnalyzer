@@ -28,8 +28,19 @@ public class SateCensusAnalyzerTest {
 			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(WRONG_CSV_FILE_PATH));
 			censusAnalyzer.readStateCensusCSVData();
 		}catch(StateCensusAnalyzerException e) {
-			System.out.println(e.getMessage());
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH, e.type);
+		}
+	}
+	
+	@Test 
+	public void givenStateCensusCSVFile_WhenStateIncorrect_ShouldThrowException() {
+		try{
+			ExpectedException exceptionRule=ExpectedException.none();
+			exceptionRule.expect(StateCensusAnalyzerException.class);
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CENSUS_CSV_FILE_PATH));
+			censusAnalyzer.readStateCensusCSVData();
+		}catch(StateCensusAnalyzerException e) {			
+			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE, e.type);
 		}
 	}
 }

@@ -26,8 +26,10 @@ public class StateCensusAnalyzer {
 			Iterable<StateCensusCSV> csvIterable = () -> StateCensusCSVIterator;
 			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
 			return noOfEnteries;
-		} catch (IOException e) {
+		} catch (IOException e1) {
 			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		}catch(IllegalStateException e2) {
+			throw new StateCensusAnalyzerException("Invalid state present", StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
 		}
 	}
 }
