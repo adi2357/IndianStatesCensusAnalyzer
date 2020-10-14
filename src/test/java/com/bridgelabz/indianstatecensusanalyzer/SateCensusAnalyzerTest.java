@@ -74,7 +74,8 @@ public class SateCensusAnalyzerTest {
 	private static final String STATE_CODE_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSV.csv";
 	private static final String WRONG_STATE_CODE_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCodeCSV.csv";
 	private static final String STATE_CODE_CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSVInvalidDelimiter.csv";
-	
+	private static final String STATE_CODE_CSV_FILE_WRONG_HEADER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSVInvalidHeader.csv";
+
 	@Test
 	public void givenStateCodeCSVFile_ShouldReturnNumberOfRecords() {
 		try {
@@ -109,16 +110,30 @@ public class SateCensusAnalyzerTest {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE, e.type);
 		}
 	}
-	
+
 	@Test
 	public void givenStateCodeCSVFile_WhenIncorrectDelimeter_ShouldThrowException() {
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
 			exceptionRule.expect(StateCensusAnalyzerException.class);
-			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CODE_CSV_FILE_WRONG_DELIMITER_PATH));
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(
+					Paths.get(STATE_CODE_CSV_FILE_WRONG_DELIMITER_PATH));
 			censusAnalyzer.readStateCodeCSVData();
 		} catch (StateCensusAnalyzerException e) {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER, e.type);
+		}
+	}
+
+	@Test
+	public void givenStateCodeCSVFile_WhenIncorrectCSVHeader_ShouldThrowException() {
+		try {
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(StateCensusAnalyzerException.class);
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(
+					Paths.get(STATE_CODE_CSV_FILE_WRONG_HEADER_PATH));
+			censusAnalyzer.readStateCodeCSVData();
+		} catch (StateCensusAnalyzerException e) {
+			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);
 		}
 	}
 
