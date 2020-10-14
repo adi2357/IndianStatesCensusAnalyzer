@@ -16,7 +16,7 @@ public class StateCensusAnalyzer {
 		this.csvFilePath = csvFilePath;
 	}
 
-	public int readStateCensusCSVData() throws Exception {
+	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			CsvToBeanBuilder<StateCensusCSV> builder = new CsvToBeanBuilder<StateCensusCSV>(reader);
@@ -26,6 +26,8 @@ public class StateCensusAnalyzer {
 			Iterable<StateCensusCSV> csvIterable = () -> StateCensusCSVIterator;
 			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
 			return noOfEnteries;
+		} catch (IOException e) {
+			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 }
