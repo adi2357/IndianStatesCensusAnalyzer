@@ -71,4 +71,17 @@ public class SateCensusAnalyzerTest {
 		}
 	}
 
+	private static final String STATE_CODE_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSV.csv";
+
+	@Test
+	public void givenStateCodeCSVFile_ShouldReturnNumberOfRecords() {
+		try {
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CODE_CSV_FILE_PATH));
+			int noOfEntries = censusAnalyzer.readStateCodeCSVData();
+			Assert.assertEquals(7, noOfEntries);
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+	}
+
 }
