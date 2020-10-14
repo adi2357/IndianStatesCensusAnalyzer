@@ -1,5 +1,6 @@
 package com.bridgelabz.indianstatecensusanalyzer;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
@@ -25,11 +26,23 @@ public class StateCensusAnalyzer {
 			Iterator<StateCensusCSV> StateCensusCSVIterator = csvToBean.iterator();
 			Iterable<StateCensusCSV> csvIterable = () -> StateCensusCSVIterator;
 			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+
+			BufferedReader br = Files.newBufferedReader(csvFilePath);
+			String header = br.readLine();
+			String[] columnsForGivenDelimeter = header.split(",");
+			if (columnsForGivenDelimeter.length < 4) {
+				throw new StateCensusAnalyzerException("Invalid delimiter",
+						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
+			}
+
 			return noOfEnteries;
 		} catch (IOException e1) {
-			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
-		}catch(IllegalStateException e2) {
-			throw new StateCensusAnalyzerException("Invalid state present", StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
+			throw new StateCensusAnalyzerException("Invalid path entered",
+					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		} catch (IllegalStateException e2) {
+			throw new StateCensusAnalyzerException("Invalid state present",
+					StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
 		}
+
 	}
 }
