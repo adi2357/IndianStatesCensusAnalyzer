@@ -97,4 +97,16 @@ public class SateCensusAnalyzerTest {
 		}
 	}
 
+	@Test
+	public void givenStateCodeCSVFile_WhenStateIncorrect_ShouldThrowException() {
+		try {
+			ExpectedException exceptionRule = ExpectedException.none();
+			exceptionRule.expect(StateCensusAnalyzerException.class);
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CODE_CSV_FILE_PATH));
+			censusAnalyzer.readStateCodeCSVData();
+		} catch (StateCensusAnalyzerException e) {
+			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE, e.type);
+		}
+	}
+
 }
