@@ -9,6 +9,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
+import com.bridgelabz.opencsvbuilder.CSVException;
+import com.bridgelabz.opencsvbuilder.ICSVBuilder;
+
 public class StateCensusAnalyzer {
 	public Path csvFilePath;
 
