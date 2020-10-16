@@ -22,7 +22,7 @@ public class StateCensusAnalyzer {
 	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCommonsCSVBuilder();
 			Iterator<StateCensusCSV> stateCensusCSVIterator = csvBuilder.getCSVIterator(reader, StateCensusCSV.class);
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
@@ -41,7 +41,7 @@ public class StateCensusAnalyzer {
 	public int readStateCodeCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCommonsCSVBuilder();
 			Iterator<CSVStates> stateCodeCSVIterator = csvBuilder.getCSVIterator(reader, CSVStates.class);
 
 			String[] expectedHeader = { "State Name", "State Code" };
