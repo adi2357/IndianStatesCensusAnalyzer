@@ -2,13 +2,12 @@ package com.bridgelabz.indianstatecensusanalyzer;
 
 import java.io.Reader;
 import java.util.Iterator;
-
 import com.opencsv.bean.CsvToBean;
 import com.opencsv.bean.CsvToBeanBuilder;
 
-public class OpenCSVBuilder {
+public class OpenCSVBuilder<E> implements ICSVBuilder<E> {
 
-	public <E> Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
+	public Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
 		try {
 			CsvToBeanBuilder<E> builder = new CsvToBeanBuilder<E>(reader);
 			CsvToBean<E> csvToBean = builder.withType(csvClass)

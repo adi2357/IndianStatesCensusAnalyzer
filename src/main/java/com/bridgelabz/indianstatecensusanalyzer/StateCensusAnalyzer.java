@@ -8,8 +8,6 @@ import java.nio.file.Path;
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
-import com.opencsv.bean.CsvToBean;
-import com.opencsv.bean.CsvToBeanBuilder;
 
 public class StateCensusAnalyzer {
 	public Path csvFilePath;
@@ -21,7 +19,8 @@ public class StateCensusAnalyzer {
 	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			Iterator<StateCensusCSV> stateCensusCSVIterator = new OpenCSVBuilder().getCSVIterator(reader, StateCensusCSV.class);
+			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			Iterator<StateCensusCSV> stateCensusCSVIterator = csvBuilder.getCSVIterator(reader, StateCensusCSV.class);
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -42,7 +41,8 @@ public class StateCensusAnalyzer {
 	public int readStateCodeCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			Iterator<CSVStates> stateCodeCSVIterator = new OpenCSVBuilder().getCSVIterator(reader, CSVStates.class);
+			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCSVBuilder();
+			Iterator<CSVStates> stateCodeCSVIterator = csvBuilder.getCSVIterator(reader, CSVStates.class);
 
 			String[] expectedHeader = { "State Name", "State Code" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
