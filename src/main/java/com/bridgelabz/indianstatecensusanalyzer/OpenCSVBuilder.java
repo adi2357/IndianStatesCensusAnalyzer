@@ -7,7 +7,7 @@ import com.opencsv.bean.CsvToBeanBuilder;
 
 public class OpenCSVBuilder<E> implements ICSVBuilder<E> {
 
-	public Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
+	public Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws CSVException {
 		try {
 			CsvToBeanBuilder<E> builder = new CsvToBeanBuilder<E>(reader);
 			CsvToBean<E> csvToBean = builder.withType(csvClass)
@@ -15,8 +15,7 @@ public class OpenCSVBuilder<E> implements ICSVBuilder<E> {
 											.build();
 			return csvToBean.iterator();
 		} catch (IllegalStateException e) {
-			throw new StateCensusAnalyzerException("Invalid state present",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
+			throw new CSVException("Invalid state present", CSVException.ExceptionType.INCORRECT_STATE);
 		}
 	}
 }

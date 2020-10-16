@@ -12,5 +12,4 @@ public class StateCensusAnalyzerException extends Exception {
 		super(message);
 		this.type = type;
 	}
-
 }

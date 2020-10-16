@@ -24,17 +24,14 @@ public class StateCensusAnalyzer {
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
-				throw new StateCensusAnalyzerException("Invalid delimiter",
-						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
+				throw new StateCensusAnalyzerException("Invalid delimiter", StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
 			}
 			if (isWrongHeader(expectedHeader, csvFilePath)) {
-				throw new StateCensusAnalyzerException("Invalid CSV header",
-						StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
+				throw new StateCensusAnalyzerException("Invalid CSV header", StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
 			}
 			return getCount(stateCensusCSVIterator);
-		} catch (IOException e) {
-			throw new StateCensusAnalyzerException("Invalid path entered",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		} catch (IOException | CSVException e) {
+			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 
@@ -46,17 +43,14 @@ public class StateCensusAnalyzer {
 
 			String[] expectedHeader = { "State Name", "State Code" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
-				throw new StateCensusAnalyzerException("Invalid delimiter",
-						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
+				throw new StateCensusAnalyzerException("Invalid delimiter", StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
 			}
 			if (isWrongHeader(expectedHeader, csvFilePath)) {
-				throw new StateCensusAnalyzerException("Invalid CSV header",
-						StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
+				throw new StateCensusAnalyzerException("Invalid CSV header", StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
 			}
 			return getCount(stateCodeCSVIterator);
-		} catch (IOException e) {
-			throw new StateCensusAnalyzerException("Invalid path entered",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		} catch (IOException | CSVException e) {
+			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 
@@ -75,8 +69,7 @@ public class StateCensusAnalyzer {
 				isWrongHeader = true;
 			return isWrongHeader;
 		} catch (IOException e) {
-			throw new StateCensusAnalyzerException("Invalid path entered",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 
@@ -89,8 +82,7 @@ public class StateCensusAnalyzer {
 				isWrongDelimiter = true;
 			return isWrongDelimiter;
 		} catch (IOException e) {
-			throw new StateCensusAnalyzerException("Invalid path entered",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 }
