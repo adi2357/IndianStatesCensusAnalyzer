@@ -21,7 +21,7 @@ public class StateCensusAnalyzer {
 	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			Iterator<StateCensusCSV> stateCensusCSVIterator = getCSVIterator(reader, StateCensusCSV.class);
+			Iterator<StateCensusCSV> stateCensusCSVIterator = new OpenCSVBuilder().getCSVIterator(reader, StateCensusCSV.class);
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -42,7 +42,7 @@ public class StateCensusAnalyzer {
 	public int readStateCodeCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			Iterator<CSVStates> stateCodeCSVIterator = getCSVIterator(reader, CSVStates.class);
+			Iterator<CSVStates> stateCodeCSVIterator = new OpenCSVBuilder().getCSVIterator(reader, CSVStates.class);
 
 			String[] expectedHeader = { "State Name", "State Code" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -57,19 +57,6 @@ public class StateCensusAnalyzer {
 		} catch (IOException e) {
 			throw new StateCensusAnalyzerException("Invalid path entered",
 					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
-		}
-	}
-
-	private <E> Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
-		try {
-			CsvToBeanBuilder<E> builder = new CsvToBeanBuilder<E>(reader);
-			CsvToBean<E> csvToBean = builder.withType(csvClass)
-											.withIgnoreLeadingWhiteSpace(true)
-											.build();
-			return csvToBean.iterator();
-		} catch (IllegalStateException e) {
-			throw new StateCensusAnalyzerException("Invalid state present",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
 		}
 	}
 
