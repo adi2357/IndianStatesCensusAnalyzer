@@ -23,7 +23,8 @@ public class StateCensusAnalyzer {
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			Iterator<StateCensusCSV> stateCensusCSVIterator = getCSVIterator(reader, StateCensusCSV.class);
 			Iterable<StateCensusCSV> csvIterable = () -> stateCensusCSVIterator;
-			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false)
+												  .count();
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
 
@@ -47,7 +48,8 @@ public class StateCensusAnalyzer {
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			Iterator<CSVStates> stateCodeCSVIterator = getCSVIterator(reader, CSVStates.class);
 			Iterable<CSVStates> csvIterable = () -> stateCodeCSVIterator;
-			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
+			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false)
+												  .count();
 
 			String[] expectedHeader = { "State Name", "State Code" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -68,7 +70,9 @@ public class StateCensusAnalyzer {
 	private <E> Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
 		try {
 			CsvToBeanBuilder<E> builder = new CsvToBeanBuilder<E>(reader);
-			CsvToBean<E> csvToBean = builder.withType(csvClass).withIgnoreLeadingWhiteSpace(true).build();
+			CsvToBean<E> csvToBean = builder.withType(csvClass)
+											.withIgnoreLeadingWhiteSpace(true)
+											.build();
 			return csvToBean.iterator();
 		} catch (IllegalStateException e) {
 			throw new StateCensusAnalyzerException("Invalid state present",
