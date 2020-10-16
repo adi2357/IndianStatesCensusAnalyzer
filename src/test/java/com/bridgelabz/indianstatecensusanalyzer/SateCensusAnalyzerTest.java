@@ -8,9 +8,9 @@ import junit.framework.Assert;
 
 public class SateCensusAnalyzerTest {
 	private static final String STATE_CENSUS_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSV.csv";
-	private static final String WRONG_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCensusCSV.csv";
-	private static final String CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidDelimiter.csv";
-	private static final String CSV_FILE_WRONG_HEADER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidHeader.csv";
+	private static final String WRONG_STATE_CENSUS_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCensusCSV.csv";
+	private static final String STATE_CENSUS_CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidDelimiter.csv";
+	private static final String STATE_CENSUS_CSV_FILE_WRONG_HEADER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidHeader.csv";
 
 	@Test
 	public void givenStateCensusCSVFile_ShouldReturnNumberOfRecords() {
@@ -28,7 +28,7 @@ public class SateCensusAnalyzerTest {
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
 			exceptionRule.expect(StateCensusAnalyzerException.class);
-			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(WRONG_CSV_FILE_PATH));
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(WRONG_STATE_CENSUS_CSV_FILE_PATH));
 			censusAnalyzer.readStateCensusCSVData();
 		} catch (StateCensusAnalyzerException e) {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH, e.type);
@@ -52,7 +52,8 @@ public class SateCensusAnalyzerTest {
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
 			exceptionRule.expect(StateCensusAnalyzerException.class);
-			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(CSV_FILE_WRONG_DELIMITER_PATH));
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(
+					Paths.get(STATE_CENSUS_CSV_FILE_WRONG_DELIMITER_PATH));
 			censusAnalyzer.readStateCensusCSVData();
 		} catch (StateCensusAnalyzerException e) {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER, e.type);
@@ -64,7 +65,8 @@ public class SateCensusAnalyzerTest {
 		try {
 			ExpectedException exceptionRule = ExpectedException.none();
 			exceptionRule.expect(StateCensusAnalyzerException.class);
-			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(CSV_FILE_WRONG_HEADER_PATH));
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(
+					Paths.get(STATE_CENSUS_CSV_FILE_WRONG_HEADER_PATH));
 			censusAnalyzer.readStateCensusCSVData();
 		} catch (StateCensusAnalyzerException e) {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);

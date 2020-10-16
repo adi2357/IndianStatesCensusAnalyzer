@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 import com.opencsv.bean.CsvToBean;
@@ -20,68 +21,86 @@ public class StateCensusAnalyzer {
 	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			CsvToBeanBuilder<StateCensusCSV> builder = new CsvToBeanBuilder<StateCensusCSV>(reader);
-			CsvToBean<StateCensusCSV> csvToBean = builder.withType(StateCensusCSV.class)
-					.withIgnoreLeadingWhiteSpace(true).build();
-			Iterator<StateCensusCSV> StateCensusCSVIterator = csvToBean.iterator();
-			Iterable<StateCensusCSV> csvIterable = () -> StateCensusCSVIterator;
+			Iterator<StateCensusCSV> stateCensusCSVIterator = getCSVIterator(reader, StateCensusCSV.class);
+			Iterable<StateCensusCSV> csvIterable = () -> stateCensusCSVIterator;
 			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
 
-			BufferedReader br = Files.newBufferedReader(csvFilePath);
-			String header = br.readLine();
-			String[] columnsForGivenDelimeter = header.split(",");
-			if (columnsForGivenDelimeter.length < 4) {
+			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
+
+			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
 				throw new StateCensusAnalyzerException("Invalid delimiter",
 						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
 			}
-			boolean isEqualsHeader = columnsForGivenDelimeter[0].equals("State")
-					&& columnsForGivenDelimeter[1].equals("Population")
-					&& columnsForGivenDelimeter[2].equals("Area In Square Km")
-					&& columnsForGivenDelimeter[3].equals("Density Per Square Km");
-			if (!isEqualsHeader) {
+			if (isWrongHeader(expectedHeader, csvFilePath)) {
 				throw new StateCensusAnalyzerException("Invalid CSV header",
 						StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
 			}
 			return noOfEnteries;
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			throw new StateCensusAnalyzerException("Invalid path entered",
 					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
-		} catch (IllegalStateException e2) {
-			throw new StateCensusAnalyzerException("Invalid state present",
-					StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
 		}
 	}
 
 	public int readStateCodeCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			CsvToBeanBuilder<CSVStates> builder = new CsvToBeanBuilder<CSVStates>(reader);
-			CsvToBean<CSVStates> csvToBean = builder.withType(CSVStates.class).withIgnoreLeadingWhiteSpace(true)
-					.build();
-			Iterator<CSVStates> StateCodeCSVIterator = csvToBean.iterator();
-			Iterable<CSVStates> csvIterable = () -> StateCodeCSVIterator;
+			Iterator<CSVStates> stateCodeCSVIterator = getCSVIterator(reader, CSVStates.class);
+			Iterable<CSVStates> csvIterable = () -> stateCodeCSVIterator;
 			int noOfEnteries = (int) StreamSupport.stream(csvIterable.spliterator(), false).count();
 
-			BufferedReader br = Files.newBufferedReader(csvFilePath);
-			String header = br.readLine();
-			String[] columnsForGivenDelimeter = header.split(",");
-			if (columnsForGivenDelimeter.length < 2) {
+			String[] expectedHeader = { "State Name", "State Code" };
+			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
 				throw new StateCensusAnalyzerException("Invalid delimiter",
 						StateCensusAnalyzerException.ExceptionType.INCORRECT_DELIMITER);
 			}
-			boolean isEqualsHeader = columnsForGivenDelimeter[0].equals("State Name")
-					&& columnsForGivenDelimeter[1].equals("State Code");
-			if (!isEqualsHeader) {
+			if (isWrongHeader(expectedHeader, csvFilePath)) {
 				throw new StateCensusAnalyzerException("Invalid CSV header",
 						StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
 			}
 			return noOfEnteries;
-		} catch (IOException e1) {
+		} catch (IOException e) {
 			throw new StateCensusAnalyzerException("Invalid path entered",
 					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
-		} catch (IllegalStateException e2) {
+		}
+	}
+
+	private <E> Iterator<E> getCSVIterator(Reader reader, Class<E> csvClass) throws StateCensusAnalyzerException {
+		try {
+			CsvToBeanBuilder<E> builder = new CsvToBeanBuilder<E>(reader);
+			CsvToBean<E> csvToBean = builder.withType(csvClass).withIgnoreLeadingWhiteSpace(true).build();
+			return csvToBean.iterator();
+		} catch (IllegalStateException e) {
 			throw new StateCensusAnalyzerException("Invalid state present",
 					StateCensusAnalyzerException.ExceptionType.INCORRECT_STATE);
+		}
+	}
+
+	public boolean isWrongHeader(String[] expectedHeader, Path csvFilePath) throws StateCensusAnalyzerException {
+		boolean isWrongHeader = false;
+		try (BufferedReader br = Files.newBufferedReader(csvFilePath)) {
+			String headerRow = br.readLine();
+			String[] header = headerRow.split(",");
+			if (!Arrays.equals(expectedHeader, header))
+				isWrongHeader = true;
+			return isWrongHeader;
+		} catch (IOException e) {
+			throw new StateCensusAnalyzerException("Invalid path entered",
+					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		}
+	}
+
+	public boolean isWrongDelimiter(String[] expectedHeader, Path csvFilePath) throws StateCensusAnalyzerException {
+		boolean isWrongDelimiter = false;
+		try (BufferedReader br = Files.newBufferedReader(csvFilePath)) {
+			String headerRow = br.readLine();
+			String[] header = headerRow.split(",");
+			if (header.length < expectedHeader.length)
+				isWrongDelimiter = true;
+			return isWrongDelimiter;
+		} catch (IOException e) {
+			throw new StateCensusAnalyzerException("Invalid path entered",
+					StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
 	}
 }
