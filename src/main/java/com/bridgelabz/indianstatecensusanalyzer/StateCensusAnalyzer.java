@@ -9,8 +9,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
-import com.bridgelabz.opencsvbuilder.CSVException;
-import com.bridgelabz.opencsvbuilder.ICSVBuilder;
+import com.bridgelabz.jarfile.commonscsvbuilder.CSVException;
+import com.bridgelabz.jarfile.commonscsvbuilder.ICSVBuilder;
+import com.bridgelabz.jarfile.commonscsvbuilder.CSVBuilderFactory;
 
 public class StateCensusAnalyzer {
 	public Path csvFilePath;
@@ -22,7 +23,7 @@ public class StateCensusAnalyzer {
 	public int readStateCensusCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCommonsCSVBuilder();
+			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
 			Iterator<StateCensusCSV> stateCensusCSVIterator = csvBuilder.getCSVIterator(reader, StateCensusCSV.class);
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
@@ -41,7 +42,7 @@ public class StateCensusAnalyzer {
 	public int readStateCodeCSVData() throws StateCensusAnalyzerException {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
-			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCommonsCSVBuilder();
+			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCSVBuilder();
 			Iterator<CSVStates> stateCodeCSVIterator = csvBuilder.getCSVIterator(reader, CSVStates.class);
 
 			String[] expectedHeader = { "State Name", "State Code" };
