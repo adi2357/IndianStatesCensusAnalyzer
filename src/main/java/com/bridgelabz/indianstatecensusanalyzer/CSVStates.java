@@ -1,5 +1,4 @@
 package com.bridgelabz.indianstatecensusanalyzer;
-
 import com.opencsv.bean.CsvBindByName;
 
 public class CSVStates {
