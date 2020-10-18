@@ -99,19 +99,30 @@ public class StateCensusAnalyzer {
 		Comparator<StateCensusCSV> stateCensusComparator = Comparator.comparing(stateCensus -> stateCensus.state);
 		this.sort(stateCensusCSVList, stateCensusComparator);
 		String sortedStateCensusJson = new Gson().toJson(stateCensusCSVList);
-		return sortedStateCensusJson;	
+		return sortedStateCensusJson;
+	}
+
+	public String getStateCodeWiseStateCodeSortedData() throws StateCensusAnalyzerException {
+		if (stateCodeCSVList == null || stateCodeCSVList.size() == 0) {
+			throw new StateCensusAnalyzerException("No CSV Data Found", StateCensusAnalyzerException.ExceptionType.NO_DATA);
+		}
+		Comparator<CSVStates> stateCodeComparator = Comparator.comparing(stateCode -> stateCode.stateCode);
+		this.sort(stateCodeCSVList, stateCodeComparator);
+		String sortedStateCodeJson = new Gson().toJson(stateCodeCSVList);
+		return sortedStateCodeJson;
 	}
 
 	private <E> void sort(List<E> csvList, Comparator<E> comparator) {
-		for(int i=0; i<csvList.size()-1; i++) {
-			for(int j=0; j<csvList.size() - i - 1;j++) {
-				E census1=csvList.get(j);
-				E census2=csvList.get(j+1);
-				if(comparator.compare(census1, census2)>0) {
+		for (int i = 0; i < csvList.size() - 1; i++) {
+			for (int j = 0; j < csvList.size() - i - 1; j++) {
+				E census1 = csvList.get(j);
+				E census2 = csvList.get(j + 1);
+				if (comparator.compare(census1, census2) > 0) {
 					csvList.set(j, census2);
-					csvList.set(j+1, census1);
+					csvList.set(j + 1, census1);
 				}
 			}
 		}
 	}
+
 }

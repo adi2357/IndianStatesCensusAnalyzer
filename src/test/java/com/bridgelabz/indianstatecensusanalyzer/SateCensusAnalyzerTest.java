@@ -79,6 +79,7 @@ public class SateCensusAnalyzerTest {
 	public void givenStateCensusCSVData_WhenSortedByState_ShouldReturnSortedResult() {
 		try {
 			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CENSUS_CSV_FILE_PATH));
+			censusAnalyzer.readStateCensusCSVData();
 			String stateCensusDataSortedByState = censusAnalyzer.getStateWiseStateCensusSortedData();
 			StateCensusCSV[] stateCensusDataArray = new Gson().fromJson(stateCensusDataSortedByState, StateCensusCSV[].class);
 			Assert.assertEquals("Jammu and Kashmir", stateCensusDataArray[0].state);
@@ -151,5 +152,16 @@ public class SateCensusAnalyzerTest {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);
 		}
 	}
-
+	
+	@Test
+	public void givenStateCodeCSVData_WhenSortedByStateCode_ShouldReturnSortedResult() {
+		try {
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CODE_CSV_FILE_PATH));
+			censusAnalyzer.readStateCodeCSVData();
+			String stateCodeDataSortedByStateCode = censusAnalyzer.getStateCodeWiseStateCodeSortedData();
+			CSVStates[] stateCodeDataArray = new Gson().fromJson(stateCodeDataSortedByStateCode, CSVStates[].class);
+			Assert.assertEquals("HP", stateCodeDataArray[0].stateCode);
+			Assert.assertEquals("UP", stateCodeDataArray[6].stateCode);
+		} catch (StateCensusAnalyzerException e) { }
+	}
 }
