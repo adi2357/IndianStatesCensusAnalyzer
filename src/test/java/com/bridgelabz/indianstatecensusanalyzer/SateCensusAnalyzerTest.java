@@ -4,6 +4,8 @@ import java.nio.file.Paths;
 import org.junit.Test;
 import org.junit.rules.ExpectedException;
 
+import com.google.gson.Gson;
+
 import junit.framework.Assert;
 
 public class SateCensusAnalyzerTest {
@@ -71,6 +73,17 @@ public class SateCensusAnalyzerTest {
 		} catch (StateCensusAnalyzerException e) {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);
 		}
+	}
+	
+	@Test
+	public void givenStateCensusCSVData_WhenSortedByState_ShouldReturnSortedResult() {
+		try {
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CENSUS_CSV_FILE_PATH));
+			String stateCensusDataSortedByState = censusAnalyzer.getStateWiseStateCensusSortedData();
+			StateCensusCSV[] stateCensusDataArray = new Gson().fromJson(stateCensusDataSortedByState, StateCensusCSV[].class);
+			Assert.assertEquals("Jammu and Kashmir", stateCensusDataArray[0].state);
+			Assert.assertEquals("Uttarakhand", stateCensusDataArray[4].state);
+		}catch (StateCensusAnalyzerException e) { }
 	}
 
 	private static final String STATE_CODE_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSV.csv";

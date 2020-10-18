@@ -7,11 +7,16 @@ import java.io.Reader;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.Iterator;
 import java.util.stream.StreamSupport;
 
+import com.google.gson.Gson;
+
 public class StateCensusAnalyzer {
 	public Path csvFilePath;
+	List<StateCensusCSV> stateCensusCSVList;
+	List<CSVStates> stateCodeCSVList;
 
 	public StateCensusAnalyzer(Path csvFilePath) {
 		this.csvFilePath = csvFilePath;
@@ -21,7 +26,7 @@ public class StateCensusAnalyzer {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			ICSVBuilder<StateCensusCSV> csvBuilder = CSVBuilderFactory.createCSVBuilder();
-			List<StateCensusCSV> stateCensusCSVList = csvBuilder.getCSVList(reader, StateCensusCSV.class);
+			stateCensusCSVList = csvBuilder.getCSVList(reader, StateCensusCSV.class);
 
 			String[] expectedHeader = { "State", "Population", "Area In Square Km", "Density Per Square Km" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -40,7 +45,7 @@ public class StateCensusAnalyzer {
 
 		try (Reader reader = Files.newBufferedReader(csvFilePath)) {
 			ICSVBuilder<CSVStates> csvBuilder = CSVBuilderFactory.createCSVBuilder();
-			Iterator<CSVStates> stateCodeCSVIterator = csvBuilder.getCSVIterator(reader, CSVStates.class);
+			stateCodeCSVList = csvBuilder.getCSVList(reader, CSVStates.class);
 
 			String[] expectedHeader = { "State Name", "State Code" };
 			if (isWrongDelimiter(expectedHeader, csvFilePath)) {
@@ -49,7 +54,7 @@ public class StateCensusAnalyzer {
 			if (isWrongHeader(expectedHeader, csvFilePath)) {
 				throw new StateCensusAnalyzerException("Invalid CSV header", StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER);
 			}
-			return getCount(stateCodeCSVIterator);
+			return stateCodeCSVList.size();
 		} catch (IOException | CSVException e) {
 			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
 		}
@@ -84,6 +89,29 @@ public class StateCensusAnalyzer {
 			return isWrongDelimiter;
 		} catch (IOException e) {
 			throw new StateCensusAnalyzerException("Invalid path entered", StateCensusAnalyzerException.ExceptionType.INCORRECT_PATH);
+		}
+	}
+
+	public String getStateWiseStateCensusSortedData() throws StateCensusAnalyzerException {
+		if(stateCensusCSVList == null || stateCensusCSVList.size() == 0) {
+			throw new StateCensusAnalyzerException("No CSV Data Found", StateCensusAnalyzerException.ExceptionType.NO_DATA);
+		}
+		Comparator<StateCensusCSV> stateCensusComparator = Comparator.comparing(stateCensus -> stateCensus.state);
+		this.sort(stateCensusCSVList, stateCensusComparator);
+		String sortedStateCensusJson = new Gson().toJson(stateCensusCSVList);
+		return sortedStateCensusJson;	
+	}
+
+	private <E> void sort(List<E> csvList, Comparator<E> comparator) {
+		for(int i=0; i<csvList.size()-1; i++) {
+			for(int j=0; j<csvList.size() - i - 1;j++) {
+				E census1=csvList.get(j);
+				E census2=csvList.get(j+1);
+				if(comparator.compare(census1, census2)>0) {
+					csvList.set(j, census2);
+					csvList.set(j+1, census1);
+				}
+			}
 		}
 	}
 }
