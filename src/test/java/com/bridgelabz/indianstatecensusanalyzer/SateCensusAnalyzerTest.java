@@ -13,7 +13,7 @@ public class SateCensusAnalyzerTest {
 	private static final String WRONG_STATE_CENSUS_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCensusCSV.csv";
 	private static final String STATE_CENSUS_CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidDelimiter.csv";
 	private static final String STATE_CENSUS_CSV_FILE_WRONG_HEADER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCensusCSVInvalidHeader.csv";
-
+	private static final String STATE_CENSUS_JSON_FILE_SORTED_BY_POPULATION = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\SortedByPopulationStateCensusJSON.json";
 	@Test
 	public void givenStateCensusCSVFile_ShouldReturnNumberOfRecords() {
 		try {
@@ -74,7 +74,7 @@ public class SateCensusAnalyzerTest {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);
 		}
 	}
-	
+
 	@Test
 	public void givenStateCensusCSVData_WhenSortedByState_ShouldReturnSortedResult() {
 		try {
@@ -87,6 +87,19 @@ public class SateCensusAnalyzerTest {
 		}catch (StateCensusAnalyzerException e) { }
 	}
 
+	@Test
+	public void givenStateCensusCSVData_WhenSortedByPopulation_ShouldReturnSortedResult() {
+		try {
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CENSUS_CSV_FILE_PATH));
+			censusAnalyzer.readStateCensusCSVData();
+			String stateCensusDataSortedByPopulation= censusAnalyzer.getPopulationWiseStateCensusSortedData(Paths.get(STATE_CENSUS_JSON_FILE_SORTED_BY_POPULATION));
+			StateCensusCSV[] stateCensusDataArray = new Gson().fromJson(stateCensusDataSortedByPopulation, StateCensusCSV[].class);
+			Assert.assertEquals("Uttar Pradesh", stateCensusDataArray[0].state);
+			Assert.assertEquals("Uttarakhand", stateCensusDataArray[4].state);
+			Assert.assertEquals(5, stateCensusDataArray.length);
+		} catch (StateCensusAnalyzerException e) { }
+	}
+	
 	private static final String STATE_CODE_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSV.csv";
 	private static final String WRONG_STATE_CODE_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCodeCSV.csv";
 	private static final String STATE_CODE_CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSVInvalidDelimiter.csv";
@@ -152,7 +165,7 @@ public class SateCensusAnalyzerTest {
 			Assert.assertEquals(StateCensusAnalyzerException.ExceptionType.INCORRECT_CSV_HEADER, e.type);
 		}
 	}
-	
+
 	@Test
 	public void givenStateCodeCSVData_WhenSortedByStateCode_ShouldReturnSortedResult() {
 		try {
