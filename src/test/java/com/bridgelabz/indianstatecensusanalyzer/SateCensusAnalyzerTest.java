@@ -99,7 +99,19 @@ public class SateCensusAnalyzerTest {
 			Assert.assertEquals(5, stateCensusDataArray.length);
 		} catch (StateCensusAnalyzerException e) { }
 	}
-	
+
+	@Test
+	public void givenStateCensusCSVData_WhenSortedByDensity_ShouldReturnSortedResult() {
+		try {
+			StateCensusAnalyzer censusAnalyzer = new StateCensusAnalyzer(Paths.get(STATE_CENSUS_CSV_FILE_PATH));
+			censusAnalyzer.readStateCensusCSVData();
+			String stateCensusDataSortedByDensity = censusAnalyzer.getDensityWiseStateCensusSortedData();
+			StateCensusCSV[] stateCensusDataArray = new Gson().fromJson(stateCensusDataSortedByDensity, StateCensusCSV[].class);
+			Assert.assertEquals("Uttar Pradesh", stateCensusDataArray[0].state);
+			Assert.assertEquals("Jammu and Kashmir", stateCensusDataArray[4].state);
+		}catch (StateCensusAnalyzerException e) { }
+	}
+
 	private static final String STATE_CODE_CSV_FILE_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSV.csv";
 	private static final String WRONG_STATE_CODE_CSV_FILE_PATH = "C:\\\\Users\\\\aaada\\\\Dev\\\\eclipse-workspace\\\\IndianStateCensusAnalyzer\\src\\StateCodeCSV.csv";
 	private static final String STATE_CODE_CSV_FILE_WRONG_DELIMITER_PATH = "C:\\Users\\aaada\\Dev\\eclipse-workspace\\IndianStateCensusAnalyzer\\StateCodeCSVInvalidDelimiter.csv";
