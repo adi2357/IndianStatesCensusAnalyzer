@@ -116,6 +116,16 @@ public class StateCensusAnalyzer {
 		return sortedStateCensusJson;
 	}
 
+	public String getAreaWiseStateCensusSortedData(Path stateCensusJsonFileSorted) throws StateCensusAnalyzerException {
+		if(stateCensusCSVList == null || stateCensusCSVList.size() == 0)
+			throw new StateCensusAnalyzerException("No CSV Data Found", StateCensusAnalyzerException.ExceptionType.NO_DATA);
+		Comparator<StateCensusCSV> stateCensusComparator = Comparator.comparing(stateCensus -> stateCensus.areaInSqKm);
+		this.sortDescending(stateCensusCSVList, stateCensusComparator);
+		String sortedStateCensusJson = new Gson().toJson(stateCensusCSVList);
+		writeSortedStateCensusCSVData(sortedStateCensusJson, stateCensusJsonFileSorted);
+		return sortedStateCensusJson;
+	}
+
 	public String getStateCodeWiseStateCodeSortedData() throws StateCensusAnalyzerException {
 		if (stateCodeCSVList == null || stateCodeCSVList.size() == 0)
 			throw new StateCensusAnalyzerException("No CSV Data Found", StateCensusAnalyzerException.ExceptionType.NO_DATA);
